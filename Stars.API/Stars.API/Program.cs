@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddPooledDbContextFactory<StarsDbContext>(options =>
 {
-    var connString = "";
+    var connString = "server=localhost;database=stars;uid=root;password=admin";
     ServerVersion server = ServerVersion.AutoDetect(connString);
     options.UseMySql(connString, server);
     options.EnableServiceProviderCaching(false);

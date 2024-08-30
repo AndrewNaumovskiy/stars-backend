@@ -1,4 +1,6 @@
-﻿namespace Stars.API.Models;
+﻿using Stars.API.Models.DbModels;
+
+namespace Stars.API.Models;
 
 public class ResponseModel<D, E>
         where D : IData
@@ -8,9 +10,7 @@ public class ResponseModel<D, E>
     public E Error { get; set; }
 }
 
-public interface IError
-{
-}
+public interface IError { }
 
 public class Error : IError
 {
@@ -21,16 +21,34 @@ public class Error : IError
     }
 }
 
-public interface IData
-{
-
-}
+public interface IData { }
 
 public class GetStudentByIdData : IData
 {
-    public List<BookModel> Books { get; set; }
-    public GetStudentByIdData(List<BookModel> books)
+    public StudentDbModel Student { get; set; }
+    public GetStudentByIdData(StudentDbModel student)
     {
-        Books = books;
+        Student = student;
+    }
+}
+public class GetStudentsByGroupIdData : IData
+{
+    public List<StudentDbModel> Students { get; set; }
+    public GetStudentsByGroupIdData(List<StudentDbModel> students)
+    {
+        Students = students;
+    }
+}
+
+
+
+
+
+public class GetGroupsData : IData
+{
+    public List<GroupByDayModel> Groups { get; set; }
+    public GetGroupsData(List<GroupByDayModel> groups)
+    {
+        Groups = groups;
     }
 }
