@@ -1,11 +1,15 @@
 meta {
   name: GetStudentsByGroupId
   type: http
-  seq: 2
+  seq: 3
 }
 
 get {
   url: {{URL}}/api/students/group/1
   body: none
   auth: none
+}
+
+params:query {
+  ~search: білл
 }
