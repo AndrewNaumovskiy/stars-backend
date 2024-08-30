@@ -12,4 +12,5 @@ public class StudentDbModel
     public int GroupFk { get; set; }
 
     public GroupDbModel Group { get; set; }
+    public IList<MarkDbModel> Marks { get; set; } = [];
 }

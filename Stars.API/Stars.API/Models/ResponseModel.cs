@@ -52,3 +52,12 @@ public class GetGroupsData : IData
         Groups = groups;
     }
 }
+
+public class StatusData : IData
+{
+    public string Status { get; set; }
+    public StatusData(string status)
+    {
+        Status = status;
+    }
+}

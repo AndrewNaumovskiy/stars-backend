@@ -8,6 +8,7 @@ public class StarsDbContext : DbContext
     public DbSet<StudentDbModel> Students { get; set; }
     public DbSet<GroupDbModel> Groups { get; set; }
     public DbSet<ClassDbModel> Classes { get; set; }
+    public DbSet<MarkDbModel> Marks { get; set; }
 
     public StarsDbContext(DbContextOptions<StarsDbContext> options) : base(options) { }
 
@@ -22,5 +23,10 @@ public class StarsDbContext : DbContext
                     .HasOne(x => x.Group)
                     .WithMany(x => x.Classes)
                     .HasForeignKey(x => x.GroupFk);
+
+        modelBuilder.Entity<MarkDbModel>()
+                    .HasOne(x => x.Student)
+                    .WithMany(x => x.Marks)
+                    .HasForeignKey(x => x.StudentFk);
     }
 }
