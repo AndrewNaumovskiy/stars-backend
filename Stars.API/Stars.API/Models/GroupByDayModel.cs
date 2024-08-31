@@ -13,12 +13,30 @@ public class GroupByDayModel
         Groups = groups;
     }
 
-    // TODO: implement
-    public void CalculateClassStatus(DateTime now)
+    Dictionary<int, (TimeOnly, TimeOnly)> lessonDate = new()
     {
-        foreach(var item in Groups)
-        {
+        { 1, (new TimeOnly(9, 0, 0), new TimeOnly(10, 30, 0)) },
+        { 2, (new TimeOnly(10, 40, 0), new TimeOnly(12, 10, 0)) },
+        { 3, (new TimeOnly(12, 20, 0), new TimeOnly(13, 50, 0)) },
+        { 4, (new TimeOnly(14, 0, 0), new TimeOnly(15, 30, 0)) },
+    };
 
+    public void CalculateClassStatus(DateTime now, int dayNumber)
+    {
+        var timeOnly = TimeOnly.FromDateTime(now);
+
+        foreach (var item in Groups)
+        {
+            var (startDate, endDate) = lessonDate[item.LessonNumber];
+
+            if (endDate < timeOnly)
+            {
+                item.Status = ClassStatus.Finished;
+            }
+            else if (startDate < timeOnly && timeOnly < endDate)
+            {
+                item.Status = ClassStatus.InProgress;
+            }
         }
     }
 
@@ -42,7 +60,7 @@ public class GroupInDayModel
         LessonNumber = dbModel.LessonNumber;
     }
 
-    public GroupInDayModel(){}
+    public GroupInDayModel() { }
 }
 
 public enum ClassStatus

@@ -33,8 +33,8 @@ public class GetStudentByIdData : IData
 }
 public class GetStudentsByGroupIdData : IData
 {
-    public List<StudentDbModel> Students { get; set; }
-    public GetStudentsByGroupIdData(List<StudentDbModel> students)
+    public List<StudentModel> Students { get; set; }
+    public GetStudentsByGroupIdData(List<StudentModel> students)
     {
         Students = students;
     }
@@ -53,6 +53,15 @@ public class GetGroupsData : IData
     }
 }
 
+public class LoginData : IData
+{
+    public string Licence { get; set; }
+    public LoginData(string licence)
+    {
+        Licence = licence;
+    }
+}
+
 public class StatusData : IData
 {
     public string Status { get; set; }
@@ -61,3 +70,4 @@ public class StatusData : IData
         Status = status;
     }
 }
+

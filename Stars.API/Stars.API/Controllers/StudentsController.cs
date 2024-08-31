@@ -64,25 +64,31 @@ public class StudentsController : ControllerBase
             }
 
             var now = DateTime.UtcNow;
+            var startDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+            var endDay = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
 
             students = await query.OrderBy(x => x.LastName)
                                   .ThenBy(x => x.FirstName)
                                   .ThenBy(x => x.MiddleName)
-                                  .Include(x => x.Marks.Where(m => m.DateSet.Date == now.Date))
+                                  .Include(x => x.Marks.Where(m => m.DateSet >= startDay && m.DateSet <= endDay))
                                   .ToListAsync();
         }
 
+        List<StudentModel> result = new(students.Count);
+
         foreach (var item in students)
         {
-            foreach (var mark in item.Marks)
+            foreach(var mark in item.Marks)
             {
                 mark.Student = null;
             }
+
+            result.Add(new(item));
         }
 
         return Ok(new ResponseModel<GetStudentsByGroupIdData, IError>()
         {
-            Data = new GetStudentsByGroupIdData(students)
+            Data = new GetStudentsByGroupIdData(result)
         });
     }
 
@@ -110,7 +116,23 @@ public class StudentsController : ControllerBase
         });
     }
 
-    // TODO: updateMark
+    [HttpPost]
+    [EnableCors]
+    [Route("{id}/updateMark/{markId}/{markType}")]
+    public async Task<ActionResult<ResponseModel<StatusData, IError>>> SetStudentsMark(int id, int markId, int markType)
+    {
+        using (var db = await _dbContext.CreateDbContextAsync())
+        {
+            var mark = await db.Marks.FirstOrDefaultAsync(x => x.Id == markId);
+            mark.MarkType = markType;
+            await db.SaveChangesAsync();
+        }
+
+        return Ok(new ResponseModel<StatusData, IError>()
+        {
+            Data = new StatusData("Ok")
+        });
+    }
 
     [HttpPost]
     [EnableCors]

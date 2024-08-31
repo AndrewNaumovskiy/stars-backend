@@ -26,7 +26,7 @@ namespace Stars.API.Controllers
             List<GroupByDayModel> result = new();
 
             var now = DateTime.UtcNow;
-            int dayNow = (int)DateTime.Now.DayOfWeek; // Wednesday = 3, Thursday = 4
+            int dayNow = (int)now.DayOfWeek; // Wednesday = 3, Thursday = 4
 
             List<IGrouping<int, ClassDbModel>> classes = null;
 
@@ -57,7 +57,7 @@ namespace Stars.API.Controllers
                 {
                     addGroup = new($"Today ({dayName})", groups);
                     dayAtTop = addGroup;
-                    addGroup.CalculateClassStatus(now);
+                    addGroup.CalculateClassStatus(now, group.Key);
                 }
                 else
                 {
