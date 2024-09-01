@@ -19,6 +19,11 @@ public class StarsDbContext : DbContext
                     .WithMany(x => x.Students)
                     .HasForeignKey(x => x.GroupFk);
 
+        modelBuilder.Entity<GroupDbModel>()
+                    .HasOne(x => x.StudentHead)
+                    .WithOne(x => x.HeadOfGroup)
+                    .HasForeignKey<GroupDbModel>(x => x.StudentHeadFk);
+
         modelBuilder.Entity<ClassDbModel>()
                     .HasOne(x => x.Group)
                     .WithMany(x => x.Classes)

@@ -1,4 +1,5 @@
-﻿using Stars.API.Models.DbModels;
+﻿using Stars.API.Helpers;
+using Stars.API.Models.DbModels;
 
 namespace Stars.API.Models;
 
@@ -13,21 +14,14 @@ public class GroupByDayModel
         Groups = groups;
     }
 
-    Dictionary<int, (TimeOnly, TimeOnly)> lessonDate = new()
-    {
-        { 1, (new TimeOnly(9, 0, 0), new TimeOnly(10, 30, 0)) },
-        { 2, (new TimeOnly(10, 40, 0), new TimeOnly(12, 10, 0)) },
-        { 3, (new TimeOnly(12, 20, 0), new TimeOnly(13, 50, 0)) },
-        { 4, (new TimeOnly(14, 0, 0), new TimeOnly(15, 30, 0)) },
-    };
-
     public void CalculateClassStatus(DateTime now, int dayNumber)
     {
         var timeOnly = TimeOnly.FromDateTime(now);
+        timeOnly = timeOnly.AddHours(3);
 
         foreach (var item in Groups)
         {
-            var (startDate, endDate) = lessonDate[item.LessonNumber];
+            var (startDate, endDate) = ScheduleHelper.Schedule[item.LessonNumber];
 
             if (endDate < timeOnly)
             {
@@ -51,6 +45,9 @@ public class GroupInDayModel
     public string Name { get; set; }
     public int LessonNumber { get; set; }
 
+    public string StartTime { get; set; }
+    public string EndTime { get; set; }
+
     public ClassStatus Status { get; set; } = ClassStatus.NotStarted;
 
     public GroupInDayModel(ClassDbModel dbModel, DateTime now)
@@ -58,6 +55,9 @@ public class GroupInDayModel
         Id = dbModel.Group.Id;
         Name = dbModel.Group.Name;
         LessonNumber = dbModel.LessonNumber;
+
+        StartTime = ScheduleHelper.Schedule[dbModel.LessonNumber].Item1.ToString();
+        EndTime = ScheduleHelper.Schedule[dbModel.LessonNumber].Item2.ToString();
     }
 
     public GroupInDayModel() { }

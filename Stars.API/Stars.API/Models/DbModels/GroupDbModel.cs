@@ -8,7 +8,12 @@ public class GroupDbModel
     public int Id { get; set; }
     public string Name { get; set; }
     public int Year { get; set; }
+    public string TelegramLink { get; set; }
+
+    public int StudentHeadFk { get; set; }
 
     public IList<StudentDbModel> Students { get; set; } = [];
     public IList<ClassDbModel> Classes { get; set; } = [];
+
+    public StudentDbModel StudentHead { get; set; }
 }

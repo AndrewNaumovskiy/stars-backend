@@ -34,9 +34,11 @@ public class GetStudentByIdData : IData
 public class GetStudentsByGroupIdData : IData
 {
     public List<StudentModel> Students { get; set; }
-    public GetStudentsByGroupIdData(List<StudentModel> students)
+    public GroupInfoModel GroupInfo { get; set; }
+    public GetStudentsByGroupIdData(List<StudentModel> students, GroupInfoModel groupInfo)
     {
         Students = students;
+        GroupInfo = groupInfo;
     }
 }
 

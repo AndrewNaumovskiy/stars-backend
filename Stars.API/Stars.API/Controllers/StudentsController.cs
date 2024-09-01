@@ -51,6 +51,8 @@ public class StudentsController : ControllerBase
     {
         List<StudentDbModel> students = null;
 
+        GroupDbModel? groupDbInfo = null;
+
         using (var db = await _dbContext.CreateDbContextAsync())
         {
             var query = db.Students.AsNoTracking()
@@ -67,14 +69,21 @@ public class StudentsController : ControllerBase
             var startDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
             var endDay = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
 
-            students = await query.OrderBy(x => x.LastName)
+            students = await query.OrderByDescending(x => x.IsFavorite)
+                                  .ThenBy(x => x.LastName)
                                   .ThenBy(x => x.FirstName)
                                   .ThenBy(x => x.MiddleName)
                                   .Include(x => x.Marks.Where(m => m.DateSet >= startDay && m.DateSet <= endDay))
                                   .ToListAsync();
+
+            groupDbInfo = await db.Groups.AsNoTracking()
+                                         .Include(x => x.StudentHead)
+                                         .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         List<StudentModel> result = new(students.Count);
+
+        GroupInfoModel groupInfo = new(groupDbInfo);
 
         foreach (var item in students)
         {
@@ -88,7 +97,7 @@ public class StudentsController : ControllerBase
 
         return Ok(new ResponseModel<GetStudentsByGroupIdData, IError>()
         {
-            Data = new GetStudentsByGroupIdData(result)
+            Data = new GetStudentsByGroupIdData(result, groupInfo)
         });
     }
 
@@ -119,12 +128,30 @@ public class StudentsController : ControllerBase
     [HttpPost]
     [EnableCors]
     [Route("{id}/updateMark/{markId}/{markType}")]
-    public async Task<ActionResult<ResponseModel<StatusData, IError>>> SetStudentsMark(int id, int markId, int markType)
+    public async Task<ActionResult<ResponseModel<StatusData, IError>>> UpdateStudentsMark(int id, int markId, int markType)
     {
         using (var db = await _dbContext.CreateDbContextAsync())
         {
             var mark = await db.Marks.FirstOrDefaultAsync(x => x.Id == markId);
             mark.MarkType = markType;
+            await db.SaveChangesAsync();
+        }
+
+        return Ok(new ResponseModel<StatusData, IError>()
+        {
+            Data = new StatusData("Ok")
+        });
+    }
+
+    [HttpPut]
+    [EnableCors]
+    [Route("favourite/{id}")]
+    public async Task<ActionResult<ResponseModel<StatusData, IError>>> UpdateFavouriteStudent(int id)
+    {
+        using (var db = await _dbContext.CreateDbContextAsync())
+        {
+            var student = await db.Students.FirstOrDefaultAsync(x => x.Id == id);
+            student.IsFavorite = student.IsFavorite == 1 ? 0 : 1;
             await db.SaveChangesAsync();
         }
 

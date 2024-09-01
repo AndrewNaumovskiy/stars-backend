@@ -78,7 +78,5 @@ namespace Stars.API.Controllers
                 Data = new GetGroupsData(result)
             });
         }
-
-
     }
 }
