@@ -31,6 +31,9 @@ builder.Services.AddCors(options =>
                                 .WithExposedHeaders(HeaderNames.AccessControlAllowOrigin));
 });
 
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<ScheduleService>();
+
 var app = builder.Build();
 
 

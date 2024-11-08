@@ -1,4 +1,5 @@
 ﻿using Stars.API.Models.DbModels;
+using Stars.API.Models.RequestModels;
 
 namespace Stars.API.Models;
 
@@ -52,6 +53,25 @@ public class GetGroupsData : IData
     public GetGroupsData(List<GroupByDayModel> groups)
     {
         Groups = groups;
+    }
+}
+public class GetScheduleData : IData
+{
+    public ScheduleRequestModel Schedule { get; set; }
+    public int HourOffset { get; set; }
+    public GetScheduleData(ScheduleRequestModel schedule, int hourOffset)
+    {
+        Schedule = schedule;
+        HourOffset = hourOffset;
+    }
+}
+
+public class SetMarkData : IData
+{
+    public MarkDbModel Mark { get; set; }
+    public SetMarkData(MarkDbModel mark)
+    {
+        Mark = mark;
     }
 }
 

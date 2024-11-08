@@ -14,14 +14,14 @@ public class GroupByDayModel
         Groups = groups;
     }
 
-    public void CalculateClassStatus(DateTime now, int dayNumber)
+    public void CalculateClassStatus(DateTime now, int dayNumber, ScheduleService scheduleService)
     {
         var timeOnly = TimeOnly.FromDateTime(now);
-        timeOnly = timeOnly.AddHours(3);
+        timeOnly = timeOnly.AddHours(scheduleService.GetHourOffset());
 
         foreach (var item in Groups)
         {
-            var (startDate, endDate) = ScheduleHelper.Schedule[item.LessonNumber];
+            var (startDate, endDate) = scheduleService.Schedule()[item.LessonNumber];
 
             if (endDate < timeOnly)
             {
@@ -50,14 +50,14 @@ public class GroupInDayModel
 
     public ClassStatus Status { get; set; } = ClassStatus.NotStarted;
 
-    public GroupInDayModel(ClassDbModel dbModel, DateTime now)
+    public GroupInDayModel(ClassDbModel dbModel, DateTime now, ScheduleService scheduleService)
     {
         Id = dbModel.Group.Id;
         Name = dbModel.Group.Name;
         LessonNumber = dbModel.LessonNumber;
 
-        StartTime = ScheduleHelper.Schedule[dbModel.LessonNumber].Item1.ToString();
-        EndTime = ScheduleHelper.Schedule[dbModel.LessonNumber].Item2.ToString();
+        StartTime = scheduleService.Schedule()[dbModel.LessonNumber].Item1.ToString();
+        EndTime = scheduleService.Schedule()[dbModel.LessonNumber].Item2.ToString();
     }
 
     public GroupInDayModel() { }

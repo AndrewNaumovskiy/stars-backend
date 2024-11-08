@@ -29,6 +29,7 @@ public class StudentsController : ControllerBase
         using (var db = await _dbContext.CreateDbContextAsync())
         {
             student = await db.Students.AsNoTracking()
+                                       .Include(x => x.Marks)
                                        .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -37,6 +38,11 @@ public class StudentsController : ControllerBase
             {
                 Error = new Error("Student not found")
             });
+
+        foreach(var item in student.Marks)
+        {
+            item.Student = null;
+        }
 
         return Ok(new ResponseModel<GetStudentByIdData, IError>()
         {
@@ -47,7 +53,7 @@ public class StudentsController : ControllerBase
     [HttpGet]
     [EnableCors]
     [Route("group/{id}")]
-    public async Task<ActionResult<ResponseModel<GetStudentsByGroupIdData, IError>>> GetStudentsByGroupId(int id, [FromQuery] string? search)
+    public async Task<ActionResult<ResponseModel<GetStudentsByGroupIdData, IError>>> GetStudentsByGroupId(int id)
     {
         List<StudentDbModel> students = null;
 
@@ -57,13 +63,6 @@ public class StudentsController : ControllerBase
         {
             var query = db.Students.AsNoTracking()
                                    .Where(x => x.GroupFk == id);
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(x => x.LastName.Contains(search) ||
-                                         x.FirstName.Contains(search) ||
-                                         x.MiddleName.Contains(search));
-            }
 
             var now = DateTime.UtcNow;
             var startDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
@@ -104,7 +103,7 @@ public class StudentsController : ControllerBase
     [HttpPost]
     [EnableCors]
     [Route("{id}/setMark/{markType}")]
-    public async Task<ActionResult<ResponseModel<StatusData, IError>>> SetStudentsMark(int id, int markType)
+    public async Task<ActionResult<ResponseModel<SetMarkData, IError>>> SetStudentsMark(int id, int markType)
     {
         var mark = new MarkDbModel()
         {
@@ -119,21 +118,41 @@ public class StudentsController : ControllerBase
             await db.SaveChangesAsync();
         }
 
-        return Ok(new ResponseModel<StatusData, IError>()
+        return Ok(new ResponseModel<SetMarkData, IError>()
         {
-            Data = new StatusData("Ok")
+            Data = new SetMarkData(mark)
         });
     }
 
     [HttpPost]
     [EnableCors]
     [Route("{id}/updateMark/{markId}/{markType}")]
-    public async Task<ActionResult<ResponseModel<StatusData, IError>>> UpdateStudentsMark(int id, int markId, int markType)
+    public async Task<ActionResult<ResponseModel<SetMarkData, IError>>> UpdateStudentsMark(int id, int markId, int markType)
+    {
+        MarkDbModel? mark = null;
+
+        using (var db = await _dbContext.CreateDbContextAsync())
+        {
+            mark = await db.Marks.FirstOrDefaultAsync(x => x.Id == markId);
+            mark.MarkType = markType;
+            await db.SaveChangesAsync();
+        }
+
+        return Ok(new ResponseModel<SetMarkData, IError>()
+        {
+            Data = new SetMarkData(mark)
+        });
+    }
+
+    [HttpPost]
+    [EnableCors]
+    [Route("{id}/deleteMark/{markId}")]
+    public async Task<ActionResult<ResponseModel<StatusData, IError>>> DeleteStudentsMark(int id, int markId)
     {
         using (var db = await _dbContext.CreateDbContextAsync())
         {
             var mark = await db.Marks.FirstOrDefaultAsync(x => x.Id == markId);
-            mark.MarkType = markType;
+            db.Remove(mark);
             await db.SaveChangesAsync();
         }
 
