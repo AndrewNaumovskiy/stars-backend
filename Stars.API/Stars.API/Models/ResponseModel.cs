@@ -58,11 +58,9 @@ public class GetGroupsData : IData
 public class GetScheduleData : IData
 {
     public ScheduleRequestModel Schedule { get; set; }
-    public int HourOffset { get; set; }
-    public GetScheduleData(ScheduleRequestModel schedule, int hourOffset)
+    public GetScheduleData(ScheduleRequestModel schedule)
     {
         Schedule = schedule;
-        HourOffset = hourOffset;
     }
 }
 

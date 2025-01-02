@@ -17,11 +17,12 @@ public class GroupByDayModel
     public void CalculateClassStatus(DateTime now, int dayNumber, ScheduleService scheduleService)
     {
         var timeOnly = TimeOnly.FromDateTime(now);
-        timeOnly = timeOnly.AddHours(scheduleService.GetHourOffset());
+
+        var schedule = scheduleService.Schedule();
 
         foreach (var item in Groups)
         {
-            var (startDate, endDate) = scheduleService.Schedule()[item.LessonNumber];
+            var (startDate, endDate) = schedule[item.LessonNumber];
 
             if (endDate < timeOnly)
             {

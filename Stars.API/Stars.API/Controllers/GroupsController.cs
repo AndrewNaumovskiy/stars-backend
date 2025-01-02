@@ -88,11 +88,10 @@ namespace Stars.API.Controllers
         public async Task<ActionResult<ResponseModel<GetScheduleData, IError>>> Schedule()
         {
             var schedule = _scheduleService.GetSchedule();
-            var hourOffset = _scheduleService.GetHourOffset();
 
             return Ok(new ResponseModel<GetScheduleData, IError>
             {
-                Data = new GetScheduleData(schedule, hourOffset)
+                Data = new GetScheduleData(schedule)
             });
         }
 
@@ -101,9 +100,7 @@ namespace Stars.API.Controllers
         [Route("updateSchedule")]
         public async Task<ActionResult<ResponseModel<StatusData, IError>>> SetSchedule([FromBody] ScheduleRequestModel body)
         {
-            _scheduleService.SetHourOffset(body.HourOffset);
-            var hourOffset = _scheduleService.GetHourOffset();
-            _scheduleService.SetSchedule(new ScheduleModel(body, hourOffset));
+            _scheduleService.SetSchedule(new ScheduleModel(body));
 
             return Ok(new ResponseModel<StatusData, IError>()
             {

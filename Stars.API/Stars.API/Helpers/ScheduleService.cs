@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Stars.API.Models.RequestModels;
+﻿using Stars.API.Models.RequestModels;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Stars.API.Helpers;
 
@@ -8,7 +8,6 @@ public class ScheduleService
     private const string Key = "schedule";
 
     private readonly IMemoryCache _cache;
-    private int _hourOffset = 2;
 
     private Dictionary<int, (TimeOnly, TimeOnly)> _lessonDate = new()
     {
@@ -48,7 +47,7 @@ public class ScheduleService
 
     public ScheduleRequestModel GetSchedule()
     {
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
         var refDate = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
 
         var schedule = Schedule();
@@ -63,15 +62,5 @@ public class ScheduleService
             FourthStart = refDate + schedule[4].Item1.ToTimeSpan(),
             FourthEnd = refDate + schedule[4].Item2.ToTimeSpan(),
         };
-    }
-
-    public int GetHourOffset()
-    {
-        return _hourOffset;
-    }
-
-    public void SetHourOffset(int offset)
-    {
-        _hourOffset = offset;
     }
 }
