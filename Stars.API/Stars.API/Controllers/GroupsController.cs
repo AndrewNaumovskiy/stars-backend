@@ -31,6 +31,24 @@ namespace Stars.API.Controllers
             var now = DateTime.UtcNow;
             int dayNow = (int)now.DayOfWeek; // Wednesday = 3, Thursday = 4
 
+            DateTime dateOfWednesday;
+
+            if (dayNow > 3 && dayNow < 7)
+            {
+                var daysOfPreviousWednesday = dayNow - 3;
+                dateOfWednesday = now.AddDays(-daysOfPreviousWednesday);
+            }
+            // next date
+            else if (dayNow < 3)
+            {
+                var daysOfNextWednesday = 3 - dayNow;
+                dateOfWednesday = now.AddDays(daysOfNextWednesday);
+            }
+            else
+            {
+                dateOfWednesday = now;
+            }
+
             List<IGrouping<int, ClassDbModel>> classes = null;
 
             using (var db = await _dbContext.CreateDbContextAsync())
@@ -58,14 +76,16 @@ namespace Stars.API.Controllers
 
                 if (dayNow == group.Key)
                 {
-                    addGroup = new($"Today ({dayName})", groups);
+                    addGroup = new(dayName, true, groups);
                     dayAtTop = addGroup;
                     addGroup.CalculateClassStatus(now, group.Key, _scheduleService);
                 }
                 else
                 {
-                    addGroup = new(dayName, groups);
+                    addGroup = new(dayName, false, groups);
                 }
+
+                addGroup.AddDate(group.Key, dateOfWednesday);
 
                 result.Add(addGroup);
             }

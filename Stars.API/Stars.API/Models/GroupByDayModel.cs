@@ -5,12 +5,17 @@ namespace Stars.API.Models;
 
 public class GroupByDayModel
 {
-    public string Day { get; set; }
+    public string DayOfWeek { get; set; }
+    public string Date { get; set; }
+    public string DateReschedule { get; set; }
+    public bool IsToday { get; set; }
+
     public List<GroupInDayModel> Groups { get; set; }
 
-    public GroupByDayModel(string day, List<GroupInDayModel> groups)
+    public GroupByDayModel(string day, bool isToday, List<GroupInDayModel> groups)
     {
-        Day = day;
+        DayOfWeek = day;
+        IsToday = isToday;
         Groups = groups;
     }
 
@@ -36,6 +41,20 @@ public class GroupByDayModel
             {
                 item.Status = ClassStatus.InProgress;
             }
+        }
+    }
+
+    public void AddDate(int dateOfWeek, DateTime dateOfWednesday)
+    {
+        if (dateOfWeek == 3)
+        {
+            Date = dateOfWednesday.ToString("dd.MM.yyyy");
+            DateReschedule = dateOfWednesday.AddDays(-14).ToString("dd.MM.yyyy");
+        }
+        else if (dateOfWeek == 4)
+        {
+            Date = dateOfWednesday.AddDays(1).ToString("dd.MM.yyyy");
+            DateReschedule = dateOfWednesday.AddDays(-13).ToString("dd.MM.yyyy");
         }
     }
 
