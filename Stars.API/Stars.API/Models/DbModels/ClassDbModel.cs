@@ -9,6 +9,8 @@ public class ClassDbModel
     public int GroupFk { get; set; }
     public int DayNumber { get; set; }
     public int LessonNumber { get; set; }
+    public int Cabinet { get; set; }
+    public string Classes { get; set; }
 
     public GroupDbModel Group { get; set; }
 }

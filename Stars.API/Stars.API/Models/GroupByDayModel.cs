@@ -16,6 +16,10 @@ public class GroupByDayModel
 
     public void CalculateClassStatus(DateTime now, int dayNumber, ScheduleService scheduleService)
     {
+        TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
+
+        now = TimeZoneInfo.ConvertTime(now, timeZone);
+
         var timeOnly = TimeOnly.FromDateTime(now);
 
         var schedule = scheduleService.Schedule();
@@ -49,6 +53,9 @@ public class GroupInDayModel
     public string StartTime { get; set; }
     public string EndTime { get; set; }
 
+    public int Cabinet { get; set; }
+    public string Classes { get; set; }
+
     public ClassStatus Status { get; set; } = ClassStatus.NotStarted;
 
     public GroupInDayModel(ClassDbModel dbModel, DateTime now, ScheduleService scheduleService)
@@ -59,6 +66,9 @@ public class GroupInDayModel
 
         StartTime = scheduleService.Schedule()[dbModel.LessonNumber].Item1.ToString();
         EndTime = scheduleService.Schedule()[dbModel.LessonNumber].Item2.ToString();
+
+        Classes = dbModel.Classes;
+        Cabinet = dbModel.Cabinet;
     }
 
     public GroupInDayModel() { }
