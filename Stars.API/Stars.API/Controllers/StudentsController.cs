@@ -68,7 +68,7 @@ public class StudentsController : ControllerBase
             var startDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
             var endDay = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
 
-            students = await query.OrderByDescending(x => x.IsFavorite)
+            students = await query.OrderByDescending(x => x.StudentType)
                                   .ThenBy(x => x.LastName)
                                   .ThenBy(x => x.FirstName)
                                   .ThenBy(x => x.MiddleName)
@@ -170,7 +170,7 @@ public class StudentsController : ControllerBase
         using (var db = await _dbContext.CreateDbContextAsync())
         {
             var student = await db.Students.FirstOrDefaultAsync(x => x.Id == id);
-            student.IsFavorite = student.IsFavorite == 1 ? 0 : 1;
+            student.StudentType = student.StudentType == 1 ? 0 : 1;
             await db.SaveChangesAsync();
         }
 

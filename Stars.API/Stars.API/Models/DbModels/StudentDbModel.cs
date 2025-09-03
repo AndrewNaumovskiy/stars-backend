@@ -11,7 +11,7 @@ public class StudentDbModel
     public string MiddleName { get; set; }
     public int GroupFk { get; set; }
 
-    public int IsFavorite { get; set; }
+    public int StudentType { get; set; } // 1 - star, 0 - usual, -1 - remote, -2 - expelled
     public string Impression { get; set; }
     public string Telegram { get; set; }
     public string Phone { get; set; }

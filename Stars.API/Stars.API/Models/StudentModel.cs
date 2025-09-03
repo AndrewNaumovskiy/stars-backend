@@ -1,5 +1,4 @@
 ﻿using Stars.API.Models.DbModels;
-using System.Linq.Expressions;
 
 namespace Stars.API.Models;
 
@@ -12,7 +11,7 @@ public class StudentModel
     public int GroupFk { get; set; }
 
     public string Impression { get; set; }
-    public bool IsFavorite { get; set; }
+    public int StudentType { get; set; } // 1 - star, 0 - usual, -1 - remote, -2 - expelled
 
     public MarkDbModel Mark { get; set; }
 
@@ -25,7 +24,7 @@ public class StudentModel
         GroupFk = dbItem.GroupFk;
 
         Impression = dbItem.Impression;
-        IsFavorite = dbItem.IsFavorite == 1;
+        StudentType = dbItem.StudentType;
 
         Mark = dbItem.Marks.FirstOrDefault();
     }
