@@ -65,8 +65,8 @@ public class StudentsController : ControllerBase
                                    .Where(x => x.GroupFk == id);
 
             var now = DateTime.UtcNow;
-            var startDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
-            var endDay = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
+            var startDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Utc);
+            var endDay = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59, DateTimeKind.Utc);
 
             students = await query.OrderByDescending(x => x.StudentType)
                                   .ThenBy(x => x.LastName)

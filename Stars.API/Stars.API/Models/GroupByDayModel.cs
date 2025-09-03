@@ -21,10 +21,6 @@ public class GroupByDayModel
 
     public void CalculateClassStatus(DateTime now, int dayNumber, ScheduleService scheduleService)
     {
-        TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
-
-        now = TimeZoneInfo.ConvertTime(now, timeZone);
-
         var timeOnly = TimeOnly.FromDateTime(now);
 
         var schedule = scheduleService.Schedule();

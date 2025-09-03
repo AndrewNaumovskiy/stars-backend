@@ -48,7 +48,7 @@ public class ScheduleService
     public ScheduleRequestModel GetSchedule()
     {
         var now = DateTime.UtcNow;
-        var refDate = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+        var refDate = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Utc);
 
         var schedule = Schedule();
         return new ScheduleRequestModel()
