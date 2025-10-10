@@ -78,7 +78,6 @@ namespace Stars.API.Controllers
                 {
                     addGroup = new(dayName, true, groups);
                     dayAtTop = addGroup;
-                    addGroup.CalculateClassStatus(now, group.Key, _scheduleService);
                 }
                 else
                 {

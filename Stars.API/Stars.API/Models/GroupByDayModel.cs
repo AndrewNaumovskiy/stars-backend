@@ -19,27 +19,6 @@ public class GroupByDayModel
         Groups = groups;
     }
 
-    public void CalculateClassStatus(DateTime now, int dayNumber, ScheduleService scheduleService)
-    {
-        var timeOnly = TimeOnly.FromDateTime(now);
-
-        var schedule = scheduleService.Schedule();
-
-        foreach (var item in Groups)
-        {
-            var (startDate, endDate) = schedule[item.LessonNumber];
-
-            if (endDate < timeOnly)
-            {
-                item.Status = ClassStatus.Finished;
-            }
-            else if (startDate < timeOnly && timeOnly < endDate)
-            {
-                item.Status = ClassStatus.InProgress;
-            }
-        }
-    }
-
     public void AddDate(int dateOfWeek, DateTime dateOfWednesday)
     {
         if (dateOfWeek == 3)
@@ -71,8 +50,6 @@ public class GroupInDayModel
     public int Cabinet { get; set; }
     public string Classes { get; set; }
 
-    public ClassStatus Status { get; set; } = ClassStatus.NotStarted;
-
     public GroupInDayModel(ClassDbModel dbModel, DateTime now, ScheduleService scheduleService)
     {
         Id = dbModel.Group.Id;
@@ -87,11 +64,4 @@ public class GroupInDayModel
     }
 
     public GroupInDayModel() { }
-}
-
-public enum ClassStatus
-{
-    NotStarted = 0,
-    InProgress = 1,
-    Finished = 2
 }
